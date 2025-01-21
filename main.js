@@ -22,39 +22,35 @@ async function fetchProducts() {
     }
 }
 
-// DOM'a ürünleri eklemek için fonksiyon
 function displayProducts(products) {
-    // .product-detail sonrasına yeni bir HTML yapısı ekle
+    // Yeni HTML yapısı oluştur
     const container = document.createElement("div");
     container.className = "product-carousel";
 
-    // Başlık ekle
+    // Başlık
     const title = document.createElement("h2");
     title.textContent = "You Might Also Like";
     container.appendChild(title);
 
-    // Ürün listesi oluştur
+    // Ürün listesi
     const productList = document.createElement("div");
     productList.className = "product-list";
     container.appendChild(productList);
 
-    // Her bir ürünü listeye ekle
+    // Ürünleri listeye ekle
     products.forEach((product) => {
         const productItem = document.createElement("div");
         productItem.className = "product-item";
 
-        // Ürün görseli
         const img = document.createElement("img");
-        img.src = product.image;
+        img.src = product.image; // JSON'dan gelen görsel URL'si
         img.alt = product.name;
         productItem.appendChild(img);
 
-        // Ürün adı
         const name = document.createElement("p");
         name.textContent = product.name;
         productItem.appendChild(name);
 
-        // Ürün fiyatı
         const price = document.createElement("p");
         price.textContent = `${product.price} ${product.currency}`;
         productItem.appendChild(price);
@@ -67,11 +63,11 @@ function displayProducts(products) {
     if (productDetail) {
         productDetail.after(container);
     } else {
-        console.error("Ürün detay bölümü bulunamadı.");
+        console.error(".product-detail sınıfı bulunamadı!");
     }
 }
 
-// JSON verisini DOM'a aktar
+// Veriyi çek ve DOM'a ekle
 fetchProducts().then(data => {
     if (data) {
         displayProducts(data);
