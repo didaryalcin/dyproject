@@ -3,12 +3,13 @@
     const localStorageKey = "productList";
     const favoriteKey = "favorites";
 
-    // Fetch products from API or Local Storage
     async function fetchProducts() {
         const storedData = localStorage.getItem(localStorageKey);
         if (storedData) {
+            console.log("Data loaded from localStorage.");
             return JSON.parse(storedData);
         }
+
         try {
             const response = await fetch(apiUrl);
             if (!response.ok) throw new Error(`HTTP Error: ${response.status}`);
@@ -20,12 +21,10 @@
         }
     }
 
-    // Check favorites from local storage
     function getFavorites() {
         return JSON.parse(localStorage.getItem(favoriteKey)) || [];
     }
 
-    // Update favorites in local storage
     function updateFavorites(productId) {
         let favorites = getFavorites();
         if (favorites.includes(productId)) {
@@ -36,7 +35,6 @@
         localStorage.setItem(favoriteKey, JSON.stringify(favorites));
     }
 
-    // Build the carousel structure
     function createCarousel(products) {
         const productDetailElement = document.querySelector(".product-detail");
         if (!productDetailElement) {
@@ -44,56 +42,47 @@
             return;
         }
 
-        // Carousel Container
         const carouselContainer = document.createElement("div");
         carouselContainer.className = "carousel-container";
 
-        // Title
         const title = document.createElement("h2");
         title.textContent = "You Might Also Like";
         carouselContainer.appendChild(title);
 
-        // Track for products
         const carouselTrack = document.createElement("div");
         carouselTrack.className = "carousel-track";
         carouselContainer.appendChild(carouselTrack);
 
-        // Add products to carousel
         const favorites = getFavorites();
         products.forEach(product => {
             const productItem = document.createElement("div");
             productItem.className = "carousel-item";
 
-            // Product Image
             const img = document.createElement("img");
-            img.src = product.img;
-            img.alt = product.name;
+            img.src = product.img || "https://via.placeholder.com/150";
+            img.alt = product.name || "Product Image";
             img.onclick = () => window.open(product.url, "_blank");
             productItem.appendChild(img);
 
-            // Product Name
             const name = document.createElement("p");
-            name.textContent = product.name;
+            name.textContent = product.name || "Unnamed Product";
             productItem.appendChild(name);
 
-            // Product Price
             const price = document.createElement("span");
-            price.textContent = `${product.price} TL`;
+            price.textContent = `${product.price || "N/A"} TL`;
             productItem.appendChild(price);
 
-            // Favorite Button
             const favoriteButton = document.createElement("button");
             favoriteButton.innerHTML = favorites.includes(product.id) ? "💙" : "🤍";
             favoriteButton.onclick = () => {
                 updateFavorites(product.id);
-                favoriteButton.innerHTML = favorites.includes(product.id) ? "🤍" : "💙";
+                favoriteButton.innerHTML = favorites.includes(product.id) ? "💙" : "🤍";
             };
             productItem.appendChild(favoriteButton);
 
             carouselTrack.appendChild(productItem);
         });
 
-        // Navigation Buttons
         const prevButton = document.createElement("button");
         prevButton.className = "carousel-prev";
         prevButton.textContent = "⬅";
@@ -109,7 +98,6 @@
         productDetailElement.appendChild(carouselContainer);
     }
 
-    // Carousel scroll function
     function scrollCarousel(direction, track) {
         const itemWidth = track.querySelector(".carousel-item").offsetWidth;
         const currentScroll = track.scrollLeft;
@@ -119,7 +107,6 @@
         });
     }
 
-    // Add carousel styles
     function addCarouselStyles() {
         const style = document.createElement("style");
         style.textContent = `
@@ -184,7 +171,6 @@
         document.head.appendChild(style);
     }
 
-    // Main Execution
     const products = await fetchProducts();
     if (products) {
         addCarouselStyles();
