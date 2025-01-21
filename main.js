@@ -3,14 +3,14 @@
     const localStorageKey = "productList";
     const favoriteKey = "favorites";
 
+    // Ürünleri API'den veya localStorage'dan al
     async function fetchProducts() {
-        const storedData = localStorage.getItem(localStorageKey);
-        if (storedData) {
-            console.log("Data loaded from localStorage.");
-            return JSON.parse(storedData);
-        }
-
         try {
+            const storedData = localStorage.getItem(localStorageKey);
+            if (storedData) {
+                console.log("Data loaded from localStorage.");
+                return JSON.parse(storedData);
+            }
             const response = await fetch(apiUrl);
             if (!response.ok) throw new Error(`HTTP Error: ${response.status}`);
             const data = await response.json();
@@ -18,13 +18,16 @@
             return data;
         } catch (error) {
             console.error("Failed to fetch products:", error);
+            return [];
         }
     }
 
+    // Favoriler için localStorage'dan al
     function getFavorites() {
         return JSON.parse(localStorage.getItem(favoriteKey)) || [];
     }
 
+    // Favorileri güncelle ve localStorage'a kaydet
     function updateFavorites(productId) {
         let favorites = getFavorites();
         if (favorites.includes(productId)) {
@@ -35,6 +38,7 @@
         localStorage.setItem(favoriteKey, JSON.stringify(favorites));
     }
 
+    // Carousel oluştur
     function createCarousel(products) {
         const productDetailElement = document.querySelector(".product-detail");
         if (!productDetailElement) {
@@ -42,17 +46,21 @@
             return;
         }
 
+        // Carousel container
         const carouselContainer = document.createElement("div");
         carouselContainer.className = "carousel-container";
 
+        // Başlık
         const title = document.createElement("h2");
         title.textContent = "You Might Also Like";
         carouselContainer.appendChild(title);
 
+        // Carousel track
         const carouselTrack = document.createElement("div");
         carouselTrack.className = "carousel-track";
         carouselContainer.appendChild(carouselTrack);
 
+        // Ürünleri ekle
         const favorites = getFavorites();
         products.forEach(product => {
             const productItem = document.createElement("div");
@@ -76,13 +84,14 @@
             favoriteButton.innerHTML = favorites.includes(product.id) ? "💙" : "🤍";
             favoriteButton.onclick = () => {
                 updateFavorites(product.id);
-                favoriteButton.innerHTML = favorites.includes(product.id) ? "💙" : "🤍";
+                favoriteButton.innerHTML = getFavorites().includes(product.id) ? "💙" : "🤍";
             };
             productItem.appendChild(favoriteButton);
 
             carouselTrack.appendChild(productItem);
         });
 
+        // Navigation Buttons
         const prevButton = document.createElement("button");
         prevButton.className = "carousel-prev";
         prevButton.textContent = "⬅";
@@ -98,6 +107,7 @@
         productDetailElement.appendChild(carouselContainer);
     }
 
+    // Carousel kaydırma
     function scrollCarousel(direction, track) {
         const itemWidth = track.querySelector(".carousel-item").offsetWidth;
         const currentScroll = track.scrollLeft;
@@ -107,6 +117,7 @@
         });
     }
 
+    // Stil ekle
     function addCarouselStyles() {
         const style = document.createElement("style");
         style.textContent = `
@@ -171,9 +182,12 @@
         document.head.appendChild(style);
     }
 
+    // Main Execution
     const products = await fetchProducts();
-    if (products) {
+    if (products && products.length > 0) {
         addCarouselStyles();
         createCarousel(products);
+    } else {
+        console.error("No products found!");
     }
 })();
