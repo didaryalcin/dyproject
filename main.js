@@ -11,6 +11,9 @@ async function fetchProducts() {
     // Local storage boşsa, veriyi fetch ile çek
     try {
         const response = await fetch("https://gist.githubusercontent.com/sevindi/5765c5812bbc8238a38b3cf52f233651/raw/56261d81af8561bf0a7cf692fe572f9e1e91f372/products.json");
+        if (!response.ok) {
+            throw new Error(`HTTP Hatası! Durum: ${response.status}`);
+        }
         const data = await response.json();
 
         // Veriyi localStorage'a kaydet
@@ -42,17 +45,20 @@ function displayProducts(products) {
         const productItem = document.createElement("div");
         productItem.className = "product-item";
 
+        // Görsel
         const img = document.createElement("img");
         img.src = product.image || "https://via.placeholder.com/150"; // Görsel yoksa placeholder göster
-        img.alt = product.name;
+        img.alt = product.name || "Ürün Görseli";
         productItem.appendChild(img);
 
+        // İsim
         const name = document.createElement("p");
-        name.textContent = product.name;
+        name.textContent = product.name || "Ürün Adı Yok";
         productItem.appendChild(name);
 
+        // Fiyat
         const price = document.createElement("p");
-        price.textContent = `${product.price} ${product.currency}`;
+        price.textContent = `${product.price || "Fiyat Yok"} ${product.currency || ""}`;
         productItem.appendChild(price);
 
         productList.appendChild(productItem);
@@ -104,6 +110,11 @@ style.textContent = `
         border-radius: 8px;
         padding: 10px;
         background-color: #fff;
+        transition: transform 0.3s;
+    }
+    .product-item:hover {
+        transform: scale(1.05);
+        box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
     }
     .product-item img {
         max-width: 100%;
