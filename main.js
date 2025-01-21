@@ -22,10 +22,16 @@ async function fetchProducts() {
         return data;
     } catch (error) {
         console.error("Veri çekme hatası:", error);
+        return [];
     }
 }
 
 function displayProducts(products) {
+    if (!Array.isArray(products) || products.length === 0) {
+        console.error("Ürün listesi boş veya geçersiz.");
+        return;
+    }
+
     // Yeni HTML yapısı oluştur
     const container = document.createElement("div");
     container.className = "product-carousel";
@@ -47,7 +53,7 @@ function displayProducts(products) {
 
         // Görsel
         const img = document.createElement("img");
-        img.src = product.image || "https://via.placeholder.com/150"; // Görsel yoksa placeholder göster
+        img.src = product.img || "https://via.placeholder.com/150"; // Görsel yoksa placeholder göster
         img.alt = product.name || "Ürün Görseli";
         productItem.appendChild(img);
 
@@ -58,9 +64,10 @@ function displayProducts(products) {
 
         // Fiyat
         const price = document.createElement("p");
-        price.textContent = `${product.price || "Fiyat Yok"} ${product.currency || ""}`;
+        price.textContent = `${product.price || "Fiyat Yok"} TL`;
         productItem.appendChild(price);
 
+        // Ürün itemi listeye ekle
         productList.appendChild(productItem);
     });
 
