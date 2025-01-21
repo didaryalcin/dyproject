@@ -43,7 +43,7 @@ function displayProducts(products) {
         productItem.className = "product-item";
 
         const img = document.createElement("img");
-        img.src = product.image; // JSON'dan gelen görsel URL'si
+        img.src = product.image || "https://via.placeholder.com/150"; // Görsel yoksa placeholder göster
         img.alt = product.name;
         productItem.appendChild(img);
 
@@ -58,12 +58,12 @@ function displayProducts(products) {
         productList.appendChild(productItem);
     });
 
-    // .product-detail sonrasına ekle
-    const productDetail = document.querySelector(".product-detail");
-    if (productDetail) {
-        productDetail.after(container);
+    // #wrapper içerisine ekle
+    const wrapper = document.querySelector("#wrapper");
+    if (wrapper) {
+        wrapper.appendChild(container);
     } else {
-        console.error(".product-detail sınıfı bulunamadı!");
+        console.error("#wrapper öğesi bulunamadı!");
     }
 }
 
@@ -73,3 +73,51 @@ fetchProducts().then(data => {
         displayProducts(data);
     }
 });
+
+// CSS ekle
+const style = document.createElement("style");
+style.textContent = `
+    .product-carousel {
+        margin: 20px auto;
+        padding: 15px;
+        border: 1px solid #ccc;
+        border-radius: 10px;
+        background-color: #f9f9f9;
+        max-width: 1200px;
+    }
+    .product-carousel h2 {
+        text-align: center;
+        font-family: Arial, sans-serif;
+        margin-bottom: 20px;
+    }
+    .product-list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 15px;
+        justify-content: center;
+    }
+    .product-item {
+        width: 200px;
+        text-align: center;
+        font-family: Arial, sans-serif;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        padding: 10px;
+        background-color: #fff;
+    }
+    .product-item img {
+        max-width: 100%;
+        height: auto;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        margin-bottom: 10px;
+    }
+    .product-item p {
+        margin: 5px 0;
+    }
+    .product-item p:last-child {
+        font-weight: bold;
+        color: #333;
+    }
+`;
+document.head.appendChild(style);
