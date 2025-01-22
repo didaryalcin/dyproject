@@ -78,6 +78,12 @@
             }
         `;
         document.head.appendChild(style);
+
+        // Favicon sorununu çöz
+        const favicon = document.createElement("link");
+        favicon.rel = "icon";
+        favicon.href = "data:,";
+        document.head.appendChild(favicon);
     }
 
     // Ürünleri API'den veya localStorage'dan al
