@@ -1,92 +1,199 @@
-(function() {
-    // Check if we are on a product page
-    if (!document.querySelector('.product-detail')) return;
+(async function () {
+    const apiUrl = "https://gist.githubusercontent.com/sevindi/5765c5812bbc8238a38b3cf52f233651/raw/56261d81af8561bf0a7cf692fe572f9e1e91f372/products.json";
+    const localStorageKey = "productList";
+    const favoriteKey = "favorites";
 
-    // Check local storage for products or fetch them if not available
-    let products = localStorage.getItem('products');
-    if (!products) {
-        fetch('https://gist.githubusercontent.com/sevindi/5765c5812bbc8238a38b3cf52f233651/raw/56261d81af8561bf0a7cf692fe572f9e1e91f372/products.json')
-            .then(response => response.json())
-            .then(data => {
-                localStorage.setItem('products', JSON.stringify(data));
-                initializeCarousel(data);
-            });
-    } else {
-        initializeCarousel(JSON.parse(products));
+    // Ürünleri API'den veya localStorage'dan al
+    async function fetchProducts() {
+        try {
+            const storedData = localStorage.getItem(localStorageKey);
+            if (storedData) {
+                console.log("Data loaded from localStorage.");
+                return JSON.parse(storedData);
+            }
+            const response = await fetch(apiUrl);
+            if (!response.ok) throw new Error(`HTTP Error: ${response.status}`);
+            const data = await response.json();
+            localStorage.setItem(localStorageKey, JSON.stringify(data));
+            return data;
+        } catch (error) {
+            console.error("Failed to fetch products:", error);
+            alert("Products could not be loaded. Please try again later."); // Kullanıcıya bildirim
+            return [];
+        }
     }
 
-    function initializeCarousel(products) {
-        const favorites = JSON.parse(localStorage.getItem('favorites') || '{}');
-        
-        // Creating HTML structure with JavaScript
-        const carouselContainer = document.createElement('div');
-        carouselContainer.className = 'carousel-container';
-        carouselContainer.innerHTML = `
-            <h2>You Might Also Like</h2>
-            <div class="carousel-wrapper">
-                <button class="carousel-control prev"><</button>
-                <div class="carousel">
-                    ${products.map(product => `
-                        <div class="carousel-item" data-id="${product.id}">
-                            <img src="${product.image}" alt="${product.name}">
-                            <h3>${product.name}</h3>
-                            <p>${product.price}</p>
-                            <button class="favorite" style="background-color: ${favorites[product.id] ? 'blue' : 'transparent'}">❤</button>
-                        </div>
-                    `).join('')}
-                </div>
-                <button class="carousel-control next">></button>
-            </div>
-        `;
+    // Favorileri yönet
+    function manageFavorites(productId) {
+        let favorites = JSON.parse(localStorage.getItem(favoriteKey)) || {};
+        if (favorites[productId]) {
+            delete favorites[productId];
+        } else {
+            favorites[productId] = true;
+        }
+        localStorage.setItem(favoriteKey, JSON.stringify(favorites));
+        return favorites;
+    }
 
-        // Appending after .product-detail
-        const productDetail = document.querySelector('.product-detail');
-        if (productDetail) {
-            productDetail.parentNode.insertBefore(carouselContainer, productDetail.nextSibling);
+    // Carousel oluştur
+    function createCarousel(products) {
+        const productDetailElement = document.querySelector(".product-detail");
+        if (!productDetailElement) {
+            console.error("'.product-detail' element not found.");
+            return;
         }
 
-        // CSS styles
-        const style = document.createElement('style');
-        style.innerHTML = `
-            .carousel-container { text-align: center; }
-            .carousel-wrapper { position: relative; overflow: hidden; width: 100%; }
-            .carousel { display: flex; overflow-x: scroll; scroll-behavior: smooth; -webkit-overflow-scrolling: touch; }
-            .carousel-item { flex: 0 0 auto; margin-right: 10px; width: calc(100% / 6.5 - 10px); text-align: center; }
-            .carousel-control { position: absolute; top: 50%; transform: translateY(-50%); padding: 10px; background: rgba(0,0,0,0.5); color: white; cursor: pointer; }
-            .prev { left: 0; }
-            .next { right: 0; }
-            .favorite { border: none; background: transparent; font-size: 20px; cursor: pointer; }
-            @media (max-width: 768px) { .carousel-item { width: calc(100% / 4 - 10px); } }
-            @media (max-width: 480px) { .carousel-item { width: calc(100% / 2 - 10px); } }
+        // Carousel container
+        const carouselContainer = document.createElement("div");
+        carouselContainer.className = "carousel-container";
+
+        // Başlık
+        const title = document.createElement("h2");
+        title.textContent = "You Might Also Like";
+        carouselContainer.appendChild(title);
+
+        // Carousel track
+        const carouselTrack = document.createElement("div");
+        carouselTrack.className = "carousel-track";
+        carouselContainer.appendChild(carouselTrack);
+
+        // Ürünleri ekle
+        const favorites = JSON.parse(localStorage.getItem(favoriteKey)) || {};
+        products.forEach(product => {
+            const productItem = document.createElement("div");
+            productItem.className = "carousel-item";
+
+            const img = document.createElement("img");
+            img.src = product.img || "https://via.placeholder.com/150";
+            img.alt = product.name || "Product Image";
+            img.onclick = () => window.open(product.url, "_blank");
+            productItem.appendChild(img);
+
+            const name = document.createElement("p");
+            name.textContent = product.name || "Unnamed Product";
+            productItem.appendChild(name);
+
+            const price = document.createElement("span");
+            price.textContent = `${product.price || "N/A"} TL`;
+            productItem.appendChild(price);
+
+            const favoriteButton = document.createElement("button");
+            favoriteButton.innerHTML = favorites[product.id] ? "💙" : "🤍";
+            favoriteButton.onclick = (e) => {
+                e.stopPropagation();
+                const updatedFavorites = manageFavorites(product.id);
+                favoriteButton.innerHTML = updatedFavorites[product.id] ? "💙" : "🤍";
+            };
+            productItem.appendChild(favoriteButton);
+
+            carouselTrack.appendChild(productItem);
+        });
+
+        // Navigation Buttons
+        const prevButton = document.createElement("button");
+        prevButton.className = "carousel-prev";
+        prevButton.textContent = "⬅";
+        prevButton.onclick = () => scrollCarousel("left", carouselTrack);
+        carouselContainer.appendChild(prevButton);
+
+        const nextButton = document.createElement("button");
+        nextButton.className = "carousel-next";
+        nextButton.textContent = "➡";
+        nextButton.onclick = () => scrollCarousel("right", carouselTrack);
+        carouselContainer.appendChild(nextButton);
+
+        productDetailElement.appendChild(carouselContainer);
+    }
+
+    // Carousel kaydırma
+    function scrollCarousel(direction, track) {
+        const itemWidth = track.querySelector(".carousel-item").offsetWidth;
+        const currentScroll = track.scrollLeft;
+        track.scrollTo({
+            left: direction === "left" ? currentScroll - itemWidth : currentScroll + itemWidth,
+            behavior: "smooth" || "auto", // Fallback for browsers that do not support smooth scrolling
+        });
+    }
+
+    // Stil ekle
+    function addCarouselStyles() {
+        const style = document.createElement("style");
+        style.textContent = `
+            .carousel-container {
+                margin: 20px auto;
+                padding: 10px;
+                max-width: 1200px;
+                background: #f9f9f9;
+                border: 1px solid #ccc;
+                border-radius: 10px;
+                position: relative;
+            }
+            .carousel-container h2 {
+                text-align: center;
+                margin-bottom: 15px;
+            }
+            .carousel-track {
+                display: flex;
+                overflow-x: auto;
+                gap: 15px;
+                padding: 10px;
+            }
+            .carousel-item {
+                flex: 0 0 calc(100% / 6.5);
+                border: 1px solid #ddd;
+                border-radius: 10px;
+                padding: 10px;
+                text-align: center;
+                background: #fff;
+            }
+            .carousel-item img {
+                width: 100%;
+                height: auto;
+                margin-bottom: 10px;
+            }
+            .carousel-item button {
+                border: none;
+                background: none;
+                cursor: pointer;
+                font-size: 1.5rem;
+            }
+            .carousel-prev, .carousel-next {
+                position: absolute;
+                top: 50%;
+                transform: translateY(-50%);
+                background: #fff;
+                border: 1px solid #ddd;
+                border-radius: 50%;
+                padding: 10px;
+                cursor: pointer;
+                z-index: 10;
+            }
+            .carousel-prev {
+                left: -20px;
+            }
+            .carousel-next {
+                right: -20px;
+            }
+            @media (max-width: 768px) {
+                .carousel-item {
+                    flex: 0 0 calc(100% / 4 - 10px);
+                }
+            }
+            @media (max-width: 480px) {
+                .carousel-item {
+                    flex: 0 0 calc(100% / 2 - 10px);
+                }
+            }
         `;
         document.head.appendChild(style);
+    }
 
-        // Event listeners
-        const carousel = carouselContainer.querySelector('.carousel');
-        const prevButton = carouselContainer.querySelector('.prev');
-        const nextButton = carouselContainer.querySelector('.next');
-
-        prevButton.addEventListener('click', () => carousel.scrollLeft -= carousel.offsetWidth);
-        nextButton.addEventListener('click', () => carousel.scrollLeft += carousel.offsetWidth);
-
-        carousel.querySelectorAll('.carousel-item').forEach(item => {
-            item.addEventListener('click', function() {
-                window.open(`product-page-url?id=${this.dataset.id}`, '_blank');
-            });
-
-            const favoriteBtn = item.querySelector('.favorite');
-            favoriteBtn.addEventListener('click', function(e) {
-                e.stopPropagation();
-                const itemId = this.closest('.carousel-item').dataset.id;
-                if (!favorites[itemId]) {
-                    favorites[itemId] = true;
-                    this.style.backgroundColor = 'blue';
-                } else {
-                    delete favorites[itemId];
-                    this.style.backgroundColor = 'transparent';
-                }
-                localStorage.setItem('favorites', JSON.stringify(favorites));
-            });
-        });
+    // Main Execution
+    const products = await fetchProducts();
+    if (products && products.length > 0) {
+        addCarouselStyles();
+        createCarousel(products);
+    } else {
+        console.error("No products found!");
     }
 })();
