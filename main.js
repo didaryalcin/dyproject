@@ -18,19 +18,15 @@
             return data;
         } catch (error) {
             console.error("Failed to fetch products:", error);
-            alert("Products could not be loaded. Please try again later."); // Kullanıcıya bildirim
+            alert("Products could not be loaded. Please try again later.");
             return [];
         }
     }
 
     // Favorileri yönet
     function manageFavorites(productId) {
-        let favorites = JSON.parse(localStorage.getItem(favoriteKey)) || {};
-        if (favorites[productId]) {
-            delete favorites[productId];
-        } else {
-            favorites[productId] = true;
-        }
+        const favorites = JSON.parse(localStorage.getItem(favoriteKey)) || {};
+        favorites[productId] = !favorites[productId]; // Favori durumunu tersine çevir
         localStorage.setItem(favoriteKey, JSON.stringify(favorites));
         return favorites;
     }
@@ -43,22 +39,19 @@
             return;
         }
 
-        // Carousel container
         const carouselContainer = document.createElement("div");
         carouselContainer.className = "carousel-container";
 
-        // Başlık
         const title = document.createElement("h2");
         title.textContent = "You Might Also Like";
         carouselContainer.appendChild(title);
 
-        // Carousel track
         const carouselTrack = document.createElement("div");
         carouselTrack.className = "carousel-track";
         carouselContainer.appendChild(carouselTrack);
 
-        // Ürünleri ekle
         const favorites = JSON.parse(localStorage.getItem(favoriteKey)) || {};
+
         products.forEach(product => {
             const productItem = document.createElement("div");
             productItem.className = "carousel-item";
@@ -89,7 +82,6 @@
             carouselTrack.appendChild(productItem);
         });
 
-        // Navigation Buttons
         const prevButton = document.createElement("button");
         prevButton.className = "carousel-prev";
         prevButton.textContent = "⬅";
@@ -111,7 +103,7 @@
         const currentScroll = track.scrollLeft;
         track.scrollTo({
             left: direction === "left" ? currentScroll - itemWidth : currentScroll + itemWidth,
-            behavior: "smooth" || "auto", // Fallback for browsers that do not support smooth scrolling
+            behavior: "smooth",
         });
     }
 
@@ -174,23 +166,12 @@
             .carousel-next {
                 right: -20px;
             }
-            @media (max-width: 768px) {
-                .carousel-item {
-                    flex: 0 0 calc(100% / 4 - 10px);
-                }
-            }
-            @media (max-width: 480px) {
-                .carousel-item {
-                    flex: 0 0 calc(100% / 2 - 10px);
-                }
-            }
         `;
         document.head.appendChild(style);
     }
 
-    // Main Execution
     const products = await fetchProducts();
-    if (products && products.length > 0) {
+    if (products.length > 0) {
         addCarouselStyles();
         createCarousel(products);
     } else {
