@@ -3,6 +3,83 @@
     const localStorageKey = "productList";
     const favoriteKey = "favorites";
 
+    // HTML ve CSS Yapısını Dinamik Olarak Oluştur
+    function initializePage() {
+        // .product-detail container oluştur
+        const productDetail = document.createElement("div");
+        productDetail.className = "product-detail";
+        document.body.appendChild(productDetail);
+
+        // Stil oluştur ve head'e ekle
+        const style = document.createElement("style");
+        style.textContent = `
+            .product-detail {
+                padding: 20px;
+                margin: 20px auto;
+                max-width: 1200px;
+                background-color: #f9f9f9;
+                border: 1px solid #ccc;
+                border-radius: 10px;
+                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            }
+            .carousel-container {
+                position: relative;
+                overflow: hidden;
+                margin: 20px 0;
+            }
+            .carousel-container h2 {
+                text-align: center;
+                margin-bottom: 20px;
+            }
+            .carousel-track {
+                display: flex;
+                overflow-x: auto;
+                scroll-behavior: smooth;
+                gap: 15px;
+                padding: 10px;
+            }
+            .carousel-item {
+                flex: 0 0 calc(100% / 6.5);
+                border: 1px solid #ddd;
+                border-radius: 10px;
+                padding: 10px;
+                text-align: center;
+                background: #fff;
+                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            }
+            .carousel-item img {
+                width: 100%;
+                height: auto;
+                margin-bottom: 10px;
+            }
+            .carousel-item button {
+                border: none;
+                background: none;
+                cursor: pointer;
+                font-size: 1.5rem;
+            }
+            .carousel-prev,
+            .carousel-next {
+                position: absolute;
+                top: 50%;
+                transform: translateY(-50%);
+                background: #fff;
+                border: 1px solid #ddd;
+                border-radius: 50%;
+                padding: 10px;
+                cursor: pointer;
+                z-index: 10;
+            }
+            .carousel-prev {
+                left: -20px;
+            }
+            .carousel-next {
+                right: -20px;
+            }
+        `;
+        document.head.appendChild(style);
+    }
+
     // Ürünleri API'den veya localStorage'dan al
     async function fetchProducts() {
         try {
@@ -107,72 +184,10 @@
         });
     }
 
-    // Stil ekle
-    function addCarouselStyles() {
-        const style = document.createElement("style");
-        style.textContent = `
-            .carousel-container {
-                margin: 20px auto;
-                padding: 10px;
-                max-width: 1200px;
-                background: #f9f9f9;
-                border: 1px solid #ccc;
-                border-radius: 10px;
-                position: relative;
-            }
-            .carousel-container h2 {
-                text-align: center;
-                margin-bottom: 15px;
-            }
-            .carousel-track {
-                display: flex;
-                overflow-x: auto;
-                gap: 15px;
-                padding: 10px;
-            }
-            .carousel-item {
-                flex: 0 0 calc(100% / 6.5);
-                border: 1px solid #ddd;
-                border-radius: 10px;
-                padding: 10px;
-                text-align: center;
-                background: #fff;
-            }
-            .carousel-item img {
-                width: 100%;
-                height: auto;
-                margin-bottom: 10px;
-            }
-            .carousel-item button {
-                border: none;
-                background: none;
-                cursor: pointer;
-                font-size: 1.5rem;
-            }
-            .carousel-prev, .carousel-next {
-                position: absolute;
-                top: 50%;
-                transform: translateY(-50%);
-                background: #fff;
-                border: 1px solid #ddd;
-                border-radius: 50%;
-                padding: 10px;
-                cursor: pointer;
-                z-index: 10;
-            }
-            .carousel-prev {
-                left: -20px;
-            }
-            .carousel-next {
-                right: -20px;
-            }
-        `;
-        document.head.appendChild(style);
-    }
-
+    // Sayfa Yapısını Başlat ve Ürünleri Getir
+    initializePage();
     const products = await fetchProducts();
     if (products.length > 0) {
-        addCarouselStyles();
         createCarousel(products);
     } else {
         console.error("No products found!");
