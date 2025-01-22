@@ -1,28 +1,96 @@
-document.addEventListener("DOMContentLoaded", async function () {
+(async function () {
     const apiUrl = "https://gist.githubusercontent.com/sevindi/5765c5812bbc8238a38b3cf52f233651/raw/56261d81af8561bf0a7cf692fe572f9e1e91f372/products.json";
 
+    // Sayfa yapısını başlat
     function initializePage() {
+        // Body'ye .product-detail ekle
         const productDetail = document.createElement("div");
         productDetail.className = "product-detail";
         document.body.appendChild(productDetail);
 
+        // CSS stillerini ekle
         const style = document.createElement("style");
-        style.textContent = `/* CSS Kodlarınız */`;
+        style.textContent = `
+            body {
+                font-family: Arial, sans-serif;
+                margin: 0;
+                padding: 0;
+                background-color: #f0f0f0;
+            }
+            .product-detail {
+                padding: 20px;
+                margin: 20px auto;
+                max-width: 1200px;
+                background-color: #f9f9f9;
+                border: 1px solid #ccc;
+                border-radius: 10px;
+            }
+            .carousel-container {
+                display: flex;
+                overflow-x: auto;
+                scroll-behavior: smooth;
+                gap: 15px;
+                padding: 10px;
+            }
+            .carousel-item {
+                flex: 0 0 calc(100% / 6.5);
+                text-align: center;
+                border: 1px solid #ddd;
+                border-radius: 5px;
+                padding: 10px;
+                background-color: #fff;
+            }
+            .carousel-item img {
+                max-width: 100%;
+                height: auto;
+                margin-bottom: 10px;
+            }
+            .carousel-prev, .carousel-next {
+                position: absolute;
+                top: 50%;
+                transform: translateY(-50%);
+                background: #ddd;
+                border: none;
+                border-radius: 50%;
+                padding: 10px;
+                cursor: pointer;
+                z-index: 10;
+            }
+            .carousel-prev {
+                left: -40px;
+            }
+            .carousel-next {
+                right: -40px;
+            }
+            @media (max-width: 768px) {
+                .carousel-item {
+                    flex: 0 0 calc(100% / 2); /* Mobilde 2 ürün göster */
+                }
+            }
+            @media (max-width: 480px) {
+                .carousel-item {
+                    flex: 0 0 100%; /* Mobilde tam genişlik */
+                }
+            }
+        `;
         document.head.appendChild(style);
 
+        // Favicon ekle
         const favicon = document.createElement("link");
         favicon.rel = "icon";
         favicon.href = "data:,";
         document.head.appendChild(favicon);
     }
 
+    // Favori yönetimi
     function manageFavorites(productId) {
         const favorites = JSON.parse(localStorage.getItem("favorites")) || {};
-        favorites[productId] = !favorites[productId];
+        favorites[productId] = !favorites[productId]; // Favori durumunu değiştir
         localStorage.setItem("favorites", JSON.stringify(favorites));
         return favorites;
     }
 
+    // API'den veri çekme
     async function fetchProducts() {
         try {
             const response = await fetch(apiUrl);
@@ -34,6 +102,7 @@ document.addEventListener("DOMContentLoaded", async function () {
         }
     }
 
+    // Carousel oluşturma
     function createCarousel(products) {
         const productDetail = document.querySelector(".product-detail");
         if (!productDetail) {
@@ -88,16 +157,8 @@ document.addEventListener("DOMContentLoaded", async function () {
         productDetail.appendChild(nextButton);
     }
 
+    // Başlat
     initializePage();
     const products = await fetchProducts();
-    if (products.length === 0) {
-        console.error("Ürünler yüklenemedi!");
-        const productDetail = document.querySelector(".product-detail");
-        const errorMessage = document.createElement("p");
-        errorMessage.textContent = "Ürünler şu anda görüntülenemiyor. Lütfen daha sonra tekrar deneyin.";
-        errorMessage.style.color = "red";
-        productDetail.appendChild(errorMessage);
-        return;
-    }
     createCarousel(products);
-});
+})();
