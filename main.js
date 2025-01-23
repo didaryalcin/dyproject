@@ -1,4 +1,4 @@
-document.addEventListener("DOMContentLoaded", async function () {
+(async function () {
     const apiUrl = "https://gist.githubusercontent.com/sevindi/5765c5812bbc8238a38b3cf52f233651/raw/56261d81af8561bf0a7cf692fe572f9e1e91f372/products.json";
 
     function initializePage() {
@@ -18,13 +18,11 @@ document.addEventListener("DOMContentLoaded", async function () {
             }
             .carousel-container {
                 display: flex;
-                overflow-x: auto;
-                scroll-behavior: smooth;
                 gap: 15px;
-                padding: 10px;
+                overflow-x: auto;
             }
             .carousel-item {
-                flex: 0 0 calc(100% / 6.5);
+                flex: 0 0 150px;
                 text-align: center;
                 border: 1px solid #ddd;
                 border-radius: 5px;
@@ -36,33 +34,6 @@ document.addEventListener("DOMContentLoaded", async function () {
                 height: auto;
                 margin-bottom: 10px;
             }
-            .carousel-prev, .carousel-next {
-                position: absolute;
-                top: 50%;
-                transform: translateY(-50%);
-                background: #ddd;
-                border: none;
-                border-radius: 50%;
-                padding: 10px;
-                cursor: pointer;
-                z-index: 10;
-            }
-            .carousel-prev {
-                left: -40px;
-            }
-            .carousel-next {
-                right: -40px;
-            }
-            @media (max-width: 768px) {
-                .carousel-item {
-                    flex: 0 0 calc(100% / 2); /* Mobilde 2 ürün göster */
-                }
-            }
-            @media (max-width: 480px) {
-                .carousel-item {
-                    flex: 0 0 100%; /* Mobilde tam genişlik */
-                }
-            }
         `;
         document.head.appendChild(style);
 
@@ -70,13 +41,6 @@ document.addEventListener("DOMContentLoaded", async function () {
         favicon.rel = "icon";
         favicon.href = "data:,";
         document.head.appendChild(favicon);
-    }
-
-    function manageFavorites(productId) {
-        const favorites = JSON.parse(localStorage.getItem("favorites")) || {};
-        favorites[productId] = !favorites[productId]; // Favori durumunu değiştir
-        localStorage.setItem("favorites", JSON.stringify(favorites));
-        return favorites;
     }
 
     async function fetchProducts() {
@@ -115,10 +79,9 @@ document.addEventListener("DOMContentLoaded", async function () {
             price.textContent = `${product.price} TL`;
 
             const heartButton = document.createElement("button");
-            heartButton.textContent = JSON.parse(localStorage.getItem("favorites"))?.[product.id] ? "💙" : "❤️";
+            heartButton.textContent = "❤️";
             heartButton.onclick = () => {
-                const favorites = manageFavorites(product.id);
-                heartButton.textContent = favorites[product.id] ? "💙" : "❤️";
+                heartButton.textContent = heartButton.textContent === "❤️" ? "💙" : "❤️";
             };
 
             item.appendChild(img);
@@ -129,24 +92,10 @@ document.addEventListener("DOMContentLoaded", async function () {
             carouselContainer.appendChild(item);
         });
 
-        const prevButton = document.createElement("button");
-        prevButton.className = "carousel-prev";
-        prevButton.textContent = "⬅";
-        prevButton.onclick = () => carouselContainer.scrollBy({ left: -200, behavior: "smooth" });
-
-        const nextButton = document.createElement("button");
-        nextButton.className = "carousel-next";
-        nextButton.textContent = "➡";
-        nextButton.onclick = () => carouselContainer.scrollBy({ left: 200, behavior: "smooth" });
-
-        productDetail.appendChild(prevButton);
         productDetail.appendChild(carouselContainer);
-        productDetail.appendChild(nextButton);
     }
 
-    // Başlat
     initializePage();
     const products = await fetchProducts();
     createCarousel(products);
-});
-
+})();
