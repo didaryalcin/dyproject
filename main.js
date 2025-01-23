@@ -74,36 +74,46 @@
 
     // Favori yönetimi
     function manageFavorites(productId) {
-        const favorites = JSON.parse(localStorage.getItem("favorites")) || {};
-        favorites[productId] = !favorites[productId];
-        localStorage.setItem("favorites", JSON.stringify(favorites));
-        return favorites;
+        try {
+            const favorites = JSON.parse(localStorage.getItem("favorites")) || {};
+            favorites[productId] = !favorites[productId];
+            localStorage.setItem("favorites", JSON.stringify(favorites));
+            return favorites;
+        } catch (error) {
+            console.error("Favori yönetiminde bir hata oluştu:", error);
+            return {};
+        }
     }
 
     // JSON verilerini kodda tanımlıyoruz
     async function fetchProducts() {
-        const products = [
-            {
-                "id": 1,
-                "name": "Bisiklet Yaka Düz Kısa Kollu Kadın Elbise",
-                "price": "125.99",
-                "img": "https://cdn.lcwaikiki.com/Resource/Images/Product/415354/0.jpg"
-            },
-            {
-                "id": 2,
-                "name": "Standart Fit Cep Detaylı Kadın Rodeo Jean Şort",
-                "price": "99.99",
-                "img": "https://cdn.lcwaikiki.com/Resource/Images/Product/415355/0.jpg"
-            },
-            {
-                "id": 3,
-                "name": "Bisiklet Yaka Nakış İşlemeli Uzun Kollu Viskon Kadın Bluz",
-                "price": "64.99",
-                "img": "https://cdn.lcwaikiki.com/Resource/Images/Product/415356/0.jpg"
-            }
-        ];
-        localStorage.setItem("products", JSON.stringify(products)); // Verileri localStorage'a kaydedin
-        return products;
+        try {
+            const products = [
+                {
+                    "id": 1,
+                    "name": "Bisiklet Yaka Düz Kısa Kollu Kadın Elbise",
+                    "price": "125.99",
+                    "img": "https://cdn.lcwaikiki.com/Resource/Images/Product/415354/0.jpg"
+                },
+                {
+                    "id": 2,
+                    "name": "Standart Fit Cep Detaylı Kadın Rodeo Jean Şort",
+                    "price": "99.99",
+                    "img": "https://cdn.lcwaikiki.com/Resource/Images/Product/415355/0.jpg"
+                },
+                {
+                    "id": 3,
+                    "name": "Bisiklet Yaka Nakış İşlemeli Uzun Kollu Viskon Kadın Bluz",
+                    "price": "64.99",
+                    "img": "https://cdn.lcwaikiki.com/Resource/Images/Product/415356/0.jpg"
+                }
+            ];
+            localStorage.setItem("products", JSON.stringify(products)); // Verileri localStorage'a kaydedin
+            return products;
+        } catch (error) {
+            console.error("Ürünleri çekerken bir hata oluştu:", error);
+            return [];
+        }
     }
 
     // Carousel oluşturma
@@ -122,7 +132,7 @@
             item.className = "carousel-item";
 
             const img = document.createElement("img");
-            img.src = product.img || "https://via.placeholder.com/150";
+            img.src = product.img || "https://via.placeholder.com/150"; // Placeholder kullanımı
             img.alt = product.name;
 
             const name = document.createElement("p");
