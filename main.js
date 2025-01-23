@@ -1,5 +1,6 @@
-(async function () {
-    // Sayfa yapısını başlat
+document.addEventListener("DOMContentLoaded", async function () {
+    const apiUrl = "https://gist.githubusercontent.com/sevindi/5765c5812bbc8238a38b3cf52f233651/raw/56261d81af8561bf0a7cf692fe572f9e1e91f372/products.json";
+
     function initializePage() {
         const productDetail = document.createElement("div");
         productDetail.className = "product-detail";
@@ -7,12 +8,6 @@
 
         const style = document.createElement("style");
         style.textContent = `
-            body {
-                font-family: Arial, sans-serif;
-                margin: 0;
-                padding: 0;
-                background-color: #f0f0f0;
-            }
             .product-detail {
                 padding: 20px;
                 margin: 20px auto;
@@ -60,63 +55,41 @@
             }
             @media (max-width: 768px) {
                 .carousel-item {
-                    flex: 0 0 calc(100% / 2);
+                    flex: 0 0 calc(100% / 2); /* Mobilde 2 ürün göster */
                 }
             }
             @media (max-width: 480px) {
                 .carousel-item {
-                    flex: 0 0 100%;
+                    flex: 0 0 100%; /* Mobilde tam genişlik */
                 }
             }
         `;
         document.head.appendChild(style);
+
+        const favicon = document.createElement("link");
+        favicon.rel = "icon";
+        favicon.href = "data:,";
+        document.head.appendChild(favicon);
     }
 
-    // Favori yönetimi
     function manageFavorites(productId) {
-        try {
-            const favorites = JSON.parse(localStorage.getItem("favorites")) || {};
-            favorites[productId] = !favorites[productId];
-            localStorage.setItem("favorites", JSON.stringify(favorites));
-            return favorites;
-        } catch (error) {
-            console.error("Favori yönetiminde bir hata oluştu:", error);
-            return {};
-        }
+        const favorites = JSON.parse(localStorage.getItem("favorites")) || {};
+        favorites[productId] = !favorites[productId]; // Favori durumunu değiştir
+        localStorage.setItem("favorites", JSON.stringify(favorites));
+        return favorites;
     }
 
-    // JSON verilerini kodda tanımlıyoruz
     async function fetchProducts() {
         try {
-            const products = [
-                {
-                    "id": 1,
-                    "name": "Bisiklet Yaka Düz Kısa Kollu Kadın Elbise",
-                    "price": "125.99",
-                    "img": "https://cdn.lcwaikiki.com/Resource/Images/Product/415354/0.jpg"
-                },
-                {
-                    "id": 2,
-                    "name": "Standart Fit Cep Detaylı Kadın Rodeo Jean Şort",
-                    "price": "99.99",
-                    "img": "https://cdn.lcwaikiki.com/Resource/Images/Product/415355/0.jpg"
-                },
-                {
-                    "id": 3,
-                    "name": "Bisiklet Yaka Nakış İşlemeli Uzun Kollu Viskon Kadın Bluz",
-                    "price": "64.99",
-                    "img": "https://cdn.lcwaikiki.com/Resource/Images/Product/415356/0.jpg"
-                }
-            ];
-            localStorage.setItem("products", JSON.stringify(products)); // Verileri localStorage'a kaydedin
-            return products;
+            const response = await fetch(apiUrl);
+            if (!response.ok) throw new Error("API Hatası");
+            return await response.json();
         } catch (error) {
-            console.error("Ürünleri çekerken bir hata oluştu:", error);
+            console.error("Ürünleri çekerken hata oluştu:", error);
             return [];
         }
     }
 
-    // Carousel oluşturma
     function createCarousel(products) {
         const productDetail = document.querySelector(".product-detail");
         if (!productDetail) {
@@ -132,7 +105,7 @@
             item.className = "carousel-item";
 
             const img = document.createElement("img");
-            img.src = product.img || "https://via.placeholder.com/150"; // Placeholder kullanımı
+            img.src = product.img || "https://via.placeholder.com/150";
             img.alt = product.name;
 
             const name = document.createElement("p");
@@ -175,4 +148,5 @@
     initializePage();
     const products = await fetchProducts();
     createCarousel(products);
-})();
+});
+
