@@ -1,14 +1,10 @@
 (async function () {
-    const apiUrl = "https://gist.githubusercontent.com/sevindi/5765c5812bbc8238a38b3cf52f233651/raw/56261d81af8561bf0a7cf692fe572f9e1e91f372/products.json";
-
     // Sayfa yapısını başlat
     function initializePage() {
-        // Body'ye .product-detail ekle
         const productDetail = document.createElement("div");
         productDetail.className = "product-detail";
         document.body.appendChild(productDetail);
 
-        // CSS stillerini ekle
         const style = document.createElement("style");
         style.textContent = `
             body {
@@ -64,42 +60,50 @@
             }
             @media (max-width: 768px) {
                 .carousel-item {
-                    flex: 0 0 calc(100% / 2); /* Mobilde 2 ürün göster */
+                    flex: 0 0 calc(100% / 2);
                 }
             }
             @media (max-width: 480px) {
                 .carousel-item {
-                    flex: 0 0 100%; /* Mobilde tam genişlik */
+                    flex: 0 0 100%;
                 }
             }
         `;
         document.head.appendChild(style);
-
-        // Favicon ekle
-        const favicon = document.createElement("link");
-        favicon.rel = "icon";
-        favicon.href = "data:,";
-        document.head.appendChild(favicon);
     }
 
     // Favori yönetimi
     function manageFavorites(productId) {
         const favorites = JSON.parse(localStorage.getItem("favorites")) || {};
-        favorites[productId] = !favorites[productId]; // Favori durumunu değiştir
+        favorites[productId] = !favorites[productId];
         localStorage.setItem("favorites", JSON.stringify(favorites));
         return favorites;
     }
 
-    // API'den veri çekme
+    // JSON verilerini kodda tanımlıyoruz
     async function fetchProducts() {
-        try {
-            const response = await fetch(apiUrl);
-            if (!response.ok) throw new Error("API Hatası");
-            return await response.json();
-        } catch (error) {
-            console.error("Ürünleri çekerken hata oluştu:", error);
-            return [];
-        }
+        const products = [
+            {
+                "id": 1,
+                "name": "Bisiklet Yaka Düz Kısa Kollu Kadın Elbise",
+                "price": "125.99",
+                "img": "https://cdn.lcwaikiki.com/Resource/Images/Product/415354/0.jpg"
+            },
+            {
+                "id": 2,
+                "name": "Standart Fit Cep Detaylı Kadın Rodeo Jean Şort",
+                "price": "99.99",
+                "img": "https://cdn.lcwaikiki.com/Resource/Images/Product/415355/0.jpg"
+            },
+            {
+                "id": 3,
+                "name": "Bisiklet Yaka Nakış İşlemeli Uzun Kollu Viskon Kadın Bluz",
+                "price": "64.99",
+                "img": "https://cdn.lcwaikiki.com/Resource/Images/Product/415356/0.jpg"
+            }
+        ];
+        localStorage.setItem("products", JSON.stringify(products)); // Verileri localStorage'a kaydedin
+        return products;
     }
 
     // Carousel oluşturma
