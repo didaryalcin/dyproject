@@ -15,6 +15,7 @@
                 background-color: #f9f9f9;
                 border: 1px solid #ccc;
                 border-radius: 10px;
+                position: relative;
             }
             .carousel-title {
                 text-align: center;
@@ -27,6 +28,7 @@
                 display: flex;
                 gap: 15px;
                 overflow-x: auto;
+                scroll-behavior: smooth;
             }
             .carousel-item {
                 flex: 0 0 150px;
@@ -40,6 +42,23 @@
                 max-width: 100%;
                 height: auto;
                 margin-bottom: 10px;
+            }
+            .carousel-prev, .carousel-next {
+                position: absolute;
+                top: 50%;
+                transform: translateY(-50%);
+                background: #ddd;
+                border: none;
+                border-radius: 50%;
+                padding: 10px;
+                cursor: pointer;
+                z-index: 10;
+            }
+            .carousel-prev {
+                left: -40px;
+            }
+            .carousel-next {
+                right: -40px;
             }
         `;
         document.head.appendChild(style);
@@ -105,7 +124,20 @@
             carouselContainer.appendChild(item);
         });
 
+        // Ok butonlarını ekle
+        const prevButton = document.createElement("button");
+        prevButton.className = "carousel-prev";
+        prevButton.textContent = "⬅";
+        prevButton.onclick = () => carouselContainer.scrollBy({ left: -200, behavior: "smooth" });
+
+        const nextButton = document.createElement("button");
+        nextButton.className = "carousel-next";
+        nextButton.textContent = "➡";
+        nextButton.onclick = () => carouselContainer.scrollBy({ left: 200, behavior: "smooth" });
+
+        productDetail.appendChild(prevButton);
         productDetail.appendChild(carouselContainer);
+        productDetail.appendChild(nextButton);
     }
 
     initializePage();
