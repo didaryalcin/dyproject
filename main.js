@@ -6,6 +6,25 @@
         productDetail.className = "product-detail";
         document.body.appendChild(productDetail);
 
+        const navMenu = document.createElement("div");
+        navMenu.className = "nav-menu";
+        navMenu.innerHTML = `
+            <nav>
+                <ul style="display: flex; justify-content: center; list-style: none; padding: 0; margin: 20px 0;">
+                    <li style="margin: 0 15px; font-weight: bold; cursor: pointer;">KADIN</li>
+                    <li style="margin: 0 15px; font-weight: bold; cursor: pointer;">ERKEK</li>
+                    <li style="margin: 0 15px; font-weight: bold; cursor: pointer;">ÇOCUK & BEBEK</li>
+                    <li style="margin: 0 15px; font-weight: bold; cursor: pointer;">AKSESUAR</li>
+                    <li style="margin: 0 15px; font-weight: bold; cursor: pointer;">EV & YAŞAM</li>
+                    <li style="margin: 0 15px; font-weight: bold; cursor: pointer;">KOZMETİK</li>
+                    <li style="margin: 0 15px; font-weight: bold; cursor: pointer;">TÜM KATEGORİLER</li>
+                    <li style="margin: 0 15px; font-weight: bold; cursor: pointer; color: blue;">WAIKIKILAND</li>
+                    <li style="margin: 0 15px; font-weight: bold; cursor: pointer; color: red;">OUTLET</li>
+                </ul>
+            </nav>
+        `;
+        document.body.insertBefore(navMenu, productDetail);
+
         const style = document.createElement("style");
         style.textContent = `
             .product-detail {
