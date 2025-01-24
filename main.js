@@ -16,6 +16,13 @@
                 border: 1px solid #ccc;
                 border-radius: 10px;
             }
+            .carousel-title {
+                text-align: center;
+                font-size: 24px;
+                font-weight: bold;
+                margin-bottom: 20px;
+                font-family: Arial, sans-serif;
+            }
             .carousel-container {
                 display: flex;
                 gap: 15px;
@@ -61,6 +68,12 @@
             return;
         }
 
+        // Başlık ekle
+        const title = document.createElement("h2");
+        title.className = "carousel-title";
+        title.textContent = "You Might Also Like";
+        productDetail.appendChild(title);
+
         const carouselContainer = document.createElement("div");
         carouselContainer.className = "carousel-container";
 
@@ -79,9 +92,9 @@
             price.textContent = `${product.price} TL`;
 
             const heartButton = document.createElement("button");
-            heartButton.textContent = "❤️";
+            heartButton.textContent = "🤍"; // Boş kalp
             heartButton.onclick = () => {
-                heartButton.textContent = heartButton.textContent === "❤️" ? "💙" : "❤️";
+                heartButton.textContent = heartButton.textContent === "🤍" ? "💙" : "🤍";
             };
 
             item.appendChild(img);
