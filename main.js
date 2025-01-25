@@ -25,6 +25,15 @@
         `;
         document.body.insertBefore(navMenu, productDetail);
 
+        const searchBar = document.createElement("div");
+        searchBar.className = "search-bar";
+        searchBar.style = "text-align: center; margin-bottom: 20px;";
+        searchBar.innerHTML = `
+            <input type="text" placeholder="Ürün, kategori veya marka ara" style="padding: 10px; width: 300px; border: 1px solid #ccc; border-radius: 5px;">
+            <button style="padding: 10px 20px; background-color: #ddd; border: none; border-radius: 5px; cursor: pointer;">Ara</button>
+        `;
+        navMenu.insertAdjacentElement("afterend", searchBar);
+
         const style = document.createElement("style");
         style.textContent = `
             .product-detail {
@@ -78,6 +87,10 @@
             }
             .carousel-next {
                 right: -40px;
+            }
+            .search-bar button:active {
+                background-color: blue;
+                color: white;
             }
         `;
         document.head.appendChild(style);
