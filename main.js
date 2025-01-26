@@ -2,6 +2,18 @@
     const apiUrl = "https://gist.githubusercontent.com/sevindi/5765c5812bbc8238a38b3cf52f233651/raw/56261d81af8561bf0a7cf692fe572f9e1e91f372/products.json";
 
     function initializePage() {
+        // LC Waikiki logosunu ekle
+        const logoContainer = document.createElement("div");
+        logoContainer.style = "text-align: center; margin: 20px 0;";
+
+        const logoImg = document.createElement("img");
+        logoImg.src = "https://i.imgur.com/AO0k9WQ.jpeg"; // Imgur URL'sini buraya ekledik
+        logoImg.alt = "LC Waikiki Logo";
+        logoImg.style = "max-width: 150px;";
+
+        logoContainer.appendChild(logoImg);
+        document.body.prepend(logoContainer);
+
         const productDetail = document.createElement("div");
         productDetail.className = "product-detail";
         document.body.appendChild(productDetail);
