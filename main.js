@@ -94,31 +94,49 @@
                 console.error(".product-detail bulunamadı!");
                 return;
             }
-        
-            const title = $("<h2>", { 
-                class: "carousel-title", 
+
+            const title = $("<h2>", {
+                class: "carousel-title",
                 text: "You Might Also Like",
                 style: "text-align: center; font-size: 20px; font-weight: bold; margin-bottom: 20px;"
             });
             productDetail.append(title);
-        
-            const carouselContainer = $("<div>", { 
-                class: "carousel-container", 
-                style: "display: flex; gap: 10px; overflow-x: auto; scroll-behavior: smooth;" 
+
+            const carouselContainer = $("<div>", {
+                class: "carousel-container",
+                style: "display: flex; gap: 10px; overflow: hidden; position: relative;"
             });
-        
+
+            // Sol ok butonu
+            const prevButton = $("<button>", {
+                class: "carousel-prev",
+                text: "<",
+                style: "position: absolute; left: 10px; top: 50%; transform: translateY(-50%); background-color: rgba(0,0,0,0.5); color: white; border: none; border-radius: 50%; width: 40px; height: 40px; cursor: pointer; z-index: 10;"
+            }).on("click", () => {
+                carouselContainer.scrollLeft(carouselContainer.scrollLeft() - 300);
+            });
+
+            // Sağ ok butonu
+            const nextButton = $("<button>", {
+                class: "carousel-next",
+                text: ">",
+                style: "position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background-color: rgba(0,0,0,0.5); color: white; border: none; border-radius: 50%; width: 40px; height: 40px; cursor: pointer; z-index: 10;"
+            }).on("click", () => {
+                carouselContainer.scrollLeft(carouselContainer.scrollLeft() + 300);
+            });
+
             products.forEach(product => {
-                const item = $("<div>", { 
-                    class: "carousel-item", 
-                    style: "flex: 0 0 calc(100% / 6.5); text-align: center; border: 1px solid #ddd; border-radius: 5px; padding: 10px; background-color: #fff;" 
+                const item = $("<div>", {
+                    class: "carousel-item",
+                    style: "flex: 0 0 calc(100% / 6.5); text-align: center; border: 1px solid #ddd; border-radius: 5px; padding: 10px; background-color: #fff;"
                 });
                 item.data("url", product.url || "#");
-        
-                const img = $("<img>", { 
-                    src: product.img || "https://via.placeholder.com/150", 
-                    alt: product.name, 
-                    style: "max-width: 100%; height: auto; margin-bottom: 10px;", 
-                    class: "product-image" 
+
+                const img = $("<img>", {
+                    src: product.img || "https://via.placeholder.com/150",
+                    alt: product.name,
+                    style: "max-width: 100%; height: auto; margin-bottom: 10px;",
+                    class: "product-image"
                 });
                 const name = $("<p>", { text: product.name });
                 const price = $("<p>", { text: `${product.price} TL` });
@@ -126,12 +144,12 @@
                     event.stopPropagation(); // Yönlendirme olmasın
                     $(this).text($(this).text() === "🤍" ? "💙" : "🤍");
                 });
-        
+
                 item.append(img, name, price, heartButton);
                 carouselContainer.append(item);
             });
-        
-            productDetail.append(carouselContainer);
+
+            productDetail.append(prevButton, carouselContainer, nextButton);
 
             // Ürün resmine tıklama etkinliği
             $(document).on("click", ".product-image", function () {
@@ -146,63 +164,110 @@
 
         initializePage();
         fetchProducts().then(products => createCarousel(products));
+        
+        
         // Responsive düzenleme için medya sorgularını yöneten fonksiyon
-function applyResponsiveStyles() {
-    // Mobil ekran (<768px)
-    if (window.matchMedia("(max-width: 768px)").matches) {
-        $(".nav-menu").css({
-            "flex-direction": "column",
-            "align-items": "center",
-            "gap": "10px",
-        });
+             function applyResponsiveStyles() {
+            // Mobil ekran (<768px)
+            if (window.matchMedia("(max-width: 768px)").matches) {
+                $(".nav-menu").css({
+                    "flex-direction": "column",
+                    "align-items": "center",
+                });
+            
+                $(".carousel-item").css({
+                    "flex": "0 0 calc(100% / 1)", // 2 eleman gösterim
+                    "min-height": "220px",
+                });
+            
+                $(".carousel").css({
+                    "width": "100%",
+                    "padding": "0 15px", // Daha dar boşluk
+                    "margin-top": "10px",
+                });
+            
+                $(".carousel-title").css({
+                    "font-size": "16px", // Daha küçük yazı boyutu
+                });
+            }
+            
+        
+            if (
+                window.matchMedia("(min-width: 768px) and (max-width: 1024px)").matches
+            ) {
+                $(".nav-menu").css({
+                    "flex-direction": "row",
+                    "justify-content": "center",
+                });
+            
+                $(".carousel-item").css({
+                    "flex": "0 0 calc(100% / 3)", // 3 eleman gösterim
+                    "min-height": "250px",
+                    "margin": "10px", // Daha geniş boşluk
+                });
+            
+                $(".carousel").css({
+                    "width": "100%",
+                    "padding": "0 20px", // Kenar boşluğu ekle
+                });
+            }
+            
+        
+             // Laptop ekran (1025px - 1280px)
+if (
+    window.matchMedia(
+        "(min-width: 1025px) and (max-width: 1280px)"
+    ).matches
+) {
+    // Nav menü ayarları
+    $(".nav-menu").css({
+        "flex-direction": "row",
+        "justify-content": "space-between", // Menü elemanlarını yayar
+        "align-items": "center",
+        "padding": "0 20px",
+    });
 
-        $(".carousel-item").css({
-            "flex": "0 0 calc(100% / 2)",
-            "min-height": "220px",
-        });
+    // Carousel elemanları ayarları
+    $(".carousel-item").css({
+        "flex": "0 0 calc(100% / 5)", // 5 eleman
+        "margin": "10px", // Daha geniş kenar boşluğu
+        "min-height": "300px", // Yükseklik
+    });
 
-        $(".carousel-title").css({
-            "font-size": "16px",
-        });
-    }
+    // Carousel genel ayarları
+    $(".carousel").css({
+        "width": "100%",
+        "padding": "0 20px", // Kenar boşlukları
+        "margin-top": "20px",
+    });
 
-    // Tablet ekran (768px - 1024px)
-    if (
-        window.matchMedia("(min-width: 768px) and (max-width: 1024px)").matches
-    ) {
-        $(".nav-menu").css({
-            "flex-direction": "row",
-            "justify-content": "center",
-        });
-
-        $(".carousel-item").css({
-            "flex": "0 0 calc(100% / 3)",
-            "min-height": "250px",
-        });
-    }
-
-    // Laptop ekran (1025px - 1280px)
-    if (
-        window.matchMedia(
-            "(min-width: 1025px) and (max-width: 1280px)"
-        ).matches
-    ) {
-        $(".carousel-item").css({
-            "flex": "0 0 calc(100% / 5)",
-        });
-    }
-
-    // Büyük monitör (>1280px)
-    if (window.matchMedia("(min-width: 1281px)").matches) {
-        $(".carousel-item").css({
-            "flex": "0 0 calc(100% / 7)",
-        });
-    }
+    // Carousel başlık ayarları
+    $(".carousel-title").css({
+        "font-size": "20px", // Daha büyük başlık
+        "text-align": "center",
+    });
 }
 
-// Sayfa yüklendiğinde ve pencere boyutu değiştiğinde çalıştır
-$(document).ready(applyResponsiveStyles);
-$(window).resize(applyResponsiveStyles);
-
-    };
-})();
+        
+            // Büyük monitör (>1280px)
+            if (window.matchMedia("(min-width: 1281px)").matches) {
+                $(".carousel-item").css({
+                    "flex": "0 0 calc(100% / 7)", 
+                    "min-height": "100px", 
+                    "margin": "0px", 
+                });
+        
+                $(".carousel-container").css({
+                    "gap": "1px", 
+                });
+            }
+        }
+        
+        
+        $(document).ready(applyResponsiveStyles);
+        $(window).resize(applyResponsiveStyles);
+        
+        
+        };
+        })();
+        
