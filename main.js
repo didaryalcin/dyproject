@@ -2,18 +2,43 @@
     const apiUrl = "https://gist.githubusercontent.com/sevindi/5765c5812bbc8238a38b3cf52f233651/raw/56261d81af8561bf0a7cf692fe572f9e1e91f372/products.json";
 
     function initializePage() {
-        // Logo ekle
-        const logoContainer = document.createElement("div");
-        logoContainer.style = "text-align: center; margin: 20px 0;";
-        
-        const logoImg = document.createElement("img");
-        logoImg.src = "https://github.com/didaryalcin/logo1/blob/8687800eff9f13d34df5bb9e99f90e49aaa91164/logo.webp?raw=true"; // Yeni logo bağlantısı
-        logoImg.alt = "LC Waikiki Logo";
-        logoImg.style = "max-width: 200px; height: auto;";
-        
-        logoContainer.appendChild(logoImg);
-        document.body.prepend(logoContainer);
+        // Header ekle
+        const header = document.createElement("div");
+        header.style = "display: flex; justify-content: space-between; align-items: center; padding: 10px 20px; background-color: #fff; border-bottom: 1px solid #ccc;";
 
+        // Logo ekle
+        const logoImg = document.createElement("img");
+        logoImg.src = "https://github.com/didaryalcin/logo1/blob/8687800eff9f13d34df5bb9e99f90e49aaa91164/logo.webp?raw=true";
+        logoImg.alt = "LC Waikiki Logo";
+        logoImg.style = "max-width: 150px; height: auto;";
+        header.appendChild(logoImg);
+
+        // İkonları ekle
+        const iconContainer = document.createElement("div");
+        iconContainer.style = "display: flex; gap: 15px;";
+
+        const userIcon = document.createElement("img");
+        userIcon.src = "https://img.icons8.com/ios/50/user--v1.png";
+        userIcon.alt = "User Icon";
+        userIcon.style = "width: 24px; height: 24px; cursor: pointer;";
+        iconContainer.appendChild(userIcon);
+
+        const likeIcon = document.createElement("img");
+        likeIcon.src = "https://img.icons8.com/ios/50/like--v1.png";
+        likeIcon.alt = "Like Icon";
+        likeIcon.style = "width: 24px; height: 24px; cursor: pointer;";
+        iconContainer.appendChild(likeIcon);
+
+        const shoppingIcon = document.createElement("img");
+        shoppingIcon.src = "https://img.icons8.com/ios/50/shopping-bag--v1.png";
+        shoppingIcon.alt = "Shopping Icon";
+        shoppingIcon.style = "width: 24px; height: 24px; cursor: pointer;";
+        iconContainer.appendChild(shoppingIcon);
+
+        header.appendChild(iconContainer);
+        document.body.prepend(header);
+
+        // Ürün detay ve diğer bölümler
         const productDetail = document.createElement("div");
         productDetail.className = "product-detail";
         document.body.appendChild(productDetail);
@@ -45,72 +70,6 @@
             <button style="padding: 10px 20px; background-color: #ddd; border: none; border-radius: 5px; cursor: pointer;">Ara</button>
         `;
         navMenu.insertAdjacentElement("afterend", searchBar);
-
-        const style = document.createElement("style");
-        style.textContent = `
-            .product-detail {
-                padding: 20px;
-                margin: 20px auto;
-                max-width: 1200px;
-                background-color: #f9f9f9;
-                border: 1px solid #ccc;
-                border-radius: 10px;
-                position: relative;
-            }
-            .carousel-title {
-                text-align: center;
-                font-size: 24px;
-                font-weight: bold;
-                margin-bottom: 20px;
-                font-family: Arial, sans-serif;
-            }
-            .carousel-container {
-                display: flex;
-                gap: 15px;
-                overflow-x: auto;
-                scroll-behavior: smooth;
-            }
-            .carousel-item {
-                flex: 0 0 150px;
-                text-align: center;
-                border: 1px solid #ddd;
-                border-radius: 5px;
-                padding: 10px;
-                background-color: #fff;
-            }
-            .carousel-item img {
-                max-width: 100%;
-                height: auto;
-                margin-bottom: 10px;
-            }
-            .carousel-prev, .carousel-next {
-                position: absolute;
-                top: 50%;
-                transform: translateY(-50%);
-                background: #ddd;
-                border: none;
-                border-radius: 50%;
-                padding: 10px;
-                cursor: pointer;
-                z-index: 10;
-            }
-            .carousel-prev {
-                left: -40px;
-            }
-            .carousel-next {
-                right: -40px;
-            }
-            .search-bar button:active {
-                background-color: blue;
-                color: white;
-            }
-        `;
-        document.head.appendChild(style);
-
-        const favicon = document.createElement("link");
-        favicon.rel = "icon";
-        favicon.href = "data:,";
-        document.head.appendChild(favicon);
     }
 
     async function fetchProducts() {
