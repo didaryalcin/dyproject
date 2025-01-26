@@ -131,5 +131,63 @@
 
         initializePage();
         fetchProducts().then(products => createCarousel(products));
+        // Responsive düzenleme için medya sorgularını yöneten fonksiyon
+function applyResponsiveStyles() {
+    // Mobil ekran (<768px)
+    if (window.matchMedia("(max-width: 768px)").matches) {
+        $(".nav-menu").css({
+            "flex-direction": "column",
+            "align-items": "center",
+            "gap": "10px",
+        });
+
+        $(".carousel-item").css({
+            "flex": "0 0 calc(100% / 2)",
+            "min-height": "220px",
+        });
+
+        $(".carousel-title").css({
+            "font-size": "16px",
+        });
+    }
+
+    // Tablet ekran (768px - 1024px)
+    if (
+        window.matchMedia("(min-width: 768px) and (max-width: 1024px)").matches
+    ) {
+        $(".nav-menu").css({
+            "flex-direction": "row",
+            "justify-content": "center",
+        });
+
+        $(".carousel-item").css({
+            "flex": "0 0 calc(100% / 3)",
+            "min-height": "250px",
+        });
+    }
+
+    // Laptop ekran (1025px - 1280px)
+    if (
+        window.matchMedia(
+            "(min-width: 1025px) and (max-width: 1280px)"
+        ).matches
+    ) {
+        $(".carousel-item").css({
+            "flex": "0 0 calc(100% / 5)",
+        });
+    }
+
+    // Büyük monitör (>1280px)
+    if (window.matchMedia("(min-width: 1281px)").matches) {
+        $(".carousel-item").css({
+            "flex": "0 0 calc(100% / 7)",
+        });
+    }
+}
+
+// Sayfa yüklendiğinde ve pencere boyutu değiştiğinde çalıştır
+$(document).ready(applyResponsiveStyles);
+$(window).resize(applyResponsiveStyles);
+
     };
 })();
