@@ -104,10 +104,11 @@
                 const item = $("<div>", { class: "carousel-item", style: "flex: 0 0 calc(100% / 6.5); text-align: center; border: 1px solid #ddd; border-radius: 5px; padding: 10px; background-color: #fff;" });
                 item.data("url", product.url || "#");
 
-                const img = $("<img>", { src: product.img || "https://via.placeholder.com/150", alt: product.name, style: "max-width: 100%; height: auto; margin-bottom: 10px;" });
+                const img = $("<img>", { src: product.img || "https://via.placeholder.com/150", alt: product.name, style: "max-width: 100%; height: auto; margin-bottom: 10px;", class: "product-image" });
                 const name = $("<p>", { text: product.name });
                 const price = $("<p>", { text: `${product.price} TL` });
-                const heartButton = $("<button>", { text: "🤍" }).on("click", function () {
+                const heartButton = $("<button>", { text: "🤍", class: "heart-icon" }).on("click", function (event) {
+                    event.stopPropagation(); // Yönlendirme olmasın
                     $(this).text($(this).text() === "🤍" ? "💙" : "🤍");
                 });
 
@@ -117,9 +118,9 @@
 
             productDetail.append(carouselContainer);
 
-            // Ürün tıklama etkinliği
-            $(document).on("click", ".carousel-item", function () {
-                const productUrl = $(this).data("url");
+            // Ürün resmine tıklama etkinliği
+            $(document).on("click", ".product-image", function () {
+                const productUrl = $(this).closest(".carousel-item").data("url");
                 if (productUrl) {
                     window.open(productUrl, "_blank");
                 } else {
