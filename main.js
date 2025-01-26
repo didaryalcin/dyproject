@@ -2,6 +2,18 @@
     const apiUrl = "https://gist.githubusercontent.com/sevindi/5765c5812bbc8238a38b3cf52f233651/raw/56261d81af8561bf0a7cf692fe572f9e1e91f372/products.json";
 
     function initializePage() {
+        // Logo ekle
+        const logoContainer = document.createElement("div");
+        logoContainer.style = "text-align: center; margin: 20px 0;";
+        
+        const logoImg = document.createElement("img");
+        logoImg.src = "https://github.com/didaryalcin/logo1/blob/8687800eff9f13d34df5bb9e99f90e49aaa91164/logo.webp?raw=true"; // Yeni logo bağlantısı
+        logoImg.alt = "LC Waikiki Logo";
+        logoImg.style = "max-width: 200px; height: auto;";
+        
+        logoContainer.appendChild(logoImg);
+        document.body.prepend(logoContainer);
+
         const productDetail = document.createElement("div");
         productDetail.className = "product-detail";
         document.body.appendChild(productDetail);
