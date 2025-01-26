@@ -47,10 +47,14 @@
             header.appendChild(iconContainer);
             document.body.prepend(header);
 
-            // Ürün detay ve diğer bölümler
-            const productDetail = $("<div>", { class: "product-detail" });
-            $("body").append(productDetail);
+            // Arama çubuğu ekle
+            const searchBar = $("<div>", { class: "search-bar", style: "text-align: center; margin-top: 10px; margin-bottom: 10px;" }).html(`
+                <input type="text" placeholder="Ürün, kategori veya marka ara" style="padding: 10px; width: 300px; border: 1px solid #ccc; border-radius: 5px;">
+                <button style="padding: 10px 20px; background-color: #ddd; border: none; border-radius: 5px; cursor: pointer;">Ara</button>
+            `);
+            $(header).after(searchBar);
 
+            // Kadın Erkek vs. menü
             const navMenu = $("<div>", { class: "nav-menu" }).html(`
                 <nav>
                     <ul style="display: flex; justify-content: center; list-style: none; padding: 0; margin: 20px 0;">
@@ -66,13 +70,11 @@
                     </ul>
                 </nav>
             `);
-            productDetail.before(navMenu);
+            searchBar.after(navMenu);
 
-            const searchBar = $("<div>", { class: "search-bar", style: "text-align: center; margin-bottom: 20px;" }).html(`
-                <input type="text" placeholder="Ürün, kategori veya marka ara" style="padding: 10px; width: 300px; border: 1px solid #ccc; border-radius: 5px;">
-                <button style="padding: 10px 20px; background-color: #ddd; border: none; border-radius: 5px; cursor: pointer;">Ara</button>
-            `);
-            navMenu.after(searchBar);
+            // Ürün detay bölümü
+            const productDetail = $("<div>", { class: "product-detail" });
+            $("body").append(productDetail);
         }
 
         async function fetchProducts() {
