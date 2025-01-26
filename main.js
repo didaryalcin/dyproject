@@ -94,28 +94,43 @@
                 console.error(".product-detail bulunamadı!");
                 return;
             }
-
-            const title = $("<h2>", { class: "carousel-title", text: "You Might Also Like" });
+        
+            const title = $("<h2>", { 
+                class: "carousel-title", 
+                text: "You Might Also Like",
+                style: "text-align: center; font-size: 20px; font-weight: bold; margin-bottom: 20px;"
+            });
             productDetail.append(title);
-
-            const carouselContainer = $("<div>", { class: "carousel-container", style: "display: flex; gap: 10px; overflow-x: auto; scroll-behavior: smooth;" });
-
+        
+            const carouselContainer = $("<div>", { 
+                class: "carousel-container", 
+                style: "display: flex; gap: 10px; overflow-x: auto; scroll-behavior: smooth;" 
+            });
+        
             products.forEach(product => {
-                const item = $("<div>", { class: "carousel-item", style: "flex: 0 0 calc(100% / 6.5); text-align: center; border: 1px solid #ddd; border-radius: 5px; padding: 10px; background-color: #fff;" });
+                const item = $("<div>", { 
+                    class: "carousel-item", 
+                    style: "flex: 0 0 calc(100% / 6.5); text-align: center; border: 1px solid #ddd; border-radius: 5px; padding: 10px; background-color: #fff;" 
+                });
                 item.data("url", product.url || "#");
-
-                const img = $("<img>", { src: product.img || "https://via.placeholder.com/150", alt: product.name, style: "max-width: 100%; height: auto; margin-bottom: 10px;", class: "product-image" });
+        
+                const img = $("<img>", { 
+                    src: product.img || "https://via.placeholder.com/150", 
+                    alt: product.name, 
+                    style: "max-width: 100%; height: auto; margin-bottom: 10px;", 
+                    class: "product-image" 
+                });
                 const name = $("<p>", { text: product.name });
                 const price = $("<p>", { text: `${product.price} TL` });
                 const heartButton = $("<button>", { text: "🤍", class: "heart-icon" }).on("click", function (event) {
                     event.stopPropagation(); // Yönlendirme olmasın
                     $(this).text($(this).text() === "🤍" ? "💙" : "🤍");
                 });
-
+        
                 item.append(img, name, price, heartButton);
                 carouselContainer.append(item);
             });
-
+        
             productDetail.append(carouselContainer);
 
             // Ürün resmine tıklama etkinliği
