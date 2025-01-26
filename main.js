@@ -98,14 +98,29 @@
 
         const carouselContainer = document.createElement("div");
         carouselContainer.className = "carousel-container";
+        carouselContainer.style = `
+            display: flex;
+            gap: 10px;
+            overflow-x: auto;
+            scroll-behavior: smooth;
+        `;
 
         products.forEach(product => {
             const item = document.createElement("div");
             item.className = "carousel-item";
+            item.style = `
+                flex: 0 0 calc(100% / 6.5); /* 6.5 ürün görünür */
+                text-align: center;
+                border: 1px solid #ddd;
+                border-radius: 5px;
+                padding: 10px;
+                background-color: #fff;
+            `;
 
             const img = document.createElement("img");
             img.src = product.img || "https://via.placeholder.com/150";
             img.alt = product.name;
+            img.style = "max-width: 100%; height: auto; margin-bottom: 10px;";
 
             const name = document.createElement("p");
             name.textContent = product.name;
@@ -114,7 +129,7 @@
             price.textContent = `${product.price} TL`;
 
             const heartButton = document.createElement("button");
-            heartButton.textContent = "🤍"; // Boş kalp
+            heartButton.textContent = "🤍";
             heartButton.onclick = () => {
                 heartButton.textContent = heartButton.textContent === "🤍" ? "💙" : "🤍";
             };
@@ -127,14 +142,11 @@
             carouselContainer.appendChild(item);
         });
 
-        // Ok butonlarını ekle
         const prevButton = document.createElement("button");
-        prevButton.className = "carousel-prev";
         prevButton.textContent = "⬅";
         prevButton.onclick = () => carouselContainer.scrollBy({ left: -200, behavior: "smooth" });
 
         const nextButton = document.createElement("button");
-        nextButton.className = "carousel-next";
         nextButton.textContent = "➡";
         nextButton.onclick = () => carouselContainer.scrollBy({ left: 200, behavior: "smooth" });
 
