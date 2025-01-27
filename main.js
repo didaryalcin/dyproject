@@ -2,7 +2,7 @@
   const apiUrl =
     "https://gist.githubusercontent.com/sevindi/5765c5812bbc8238a38b3cf52f233651/raw/56261d81af8561bf0a7cf692fe572f9e1e91f372/products.json";
 
-  // jQuery kütüphanesini ekle
+  // jQuery kütüphanesi
   const script = document.createElement("script");
   script.src = "https://code.jquery.com/jquery-3.6.0.min.js";
   script.type = "text/javascript";
@@ -12,12 +12,12 @@
     console.log("jQuery başarıyla yüklendi!");
 
     function initializePage() {
-      // Header ekle
+      // Header
       const header = document.createElement("div");
       header.style =
         "display: flex; justify-content: space-between; align-items: center; padding: 10px 20px; background-color: #fff; border-bottom: 1px solid #ccc;";
 
-      // Logo ekle
+      // Logo
       const logoImg = document.createElement("img");
       logoImg.src =
         "https://github.com/didaryalcin/logo1/blob/8687800eff9f13d34df5bb9e99f90e49aaa91164/logo.webp?raw=true";
@@ -48,7 +48,7 @@
       iconContainer.appendChild(shoppingIcon);
 
       header.appendChild(iconContainer);
-      document.search.prepend(header);
+      document.body.prepend(header);
 
       // Arama çubuğu
       const searchBar = $("<div>", {
@@ -60,7 +60,7 @@
             `);
       $(header).after(searchBar);
 
-      // menü
+      //Menü
       const navMenu = $("<div>", { class: "nav-menu" }).html(`
                 <nav>
                     <ul style="display: flex; justify-content: center; list-style: none; padding: 0; margin: 20px 0;">
@@ -78,7 +78,7 @@
             `);
       searchBar.after(navMenu);
 
-      // Ürün detay bölümü
+      // Ürün detay
       const productDetail = $("<div>", { class: "product-detail" });
       $("body").append(productDetail);
     }
@@ -128,7 +128,7 @@
       // Sağ ok butonu
       const nextButton = $("<button>", {
         class: "carousel-next",
-        text: "➡",
+        text: "⬅",
         style:
           "position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background-color: rgba(0,0,0,0.5); color: white; border: none; border-radius: 50%; width: 40px; height: 40px; cursor: pointer; z-index: 10;",
       }).on("click", () => {
@@ -179,7 +179,7 @@
     initializePage();
     fetchProducts().then((products) => createCarousel(products));
 
-    // Responsive
+    // Responsive düzenleme
     function applyResponsiveStyles() {
       // Mobil ekran (<768px)
       if (window.matchMedia("(max-width: 768px)").matches) {
@@ -246,13 +246,13 @@
         // Carousel genel ayarları
         $(".carousel").css({
           width: "100%",
-          padding: "0 20px",
+          padding: "0 20px", // Kenar boşlukları
           "margin-top": "20px",
         });
 
         // Carousel başlık ayarları
         $(".carousel-title").css({
-          "font-size": "20px",
+          "font-size": "20px", // Daha büyük başlık
           "text-align": "center",
         });
       }
